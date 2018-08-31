@@ -1,0 +1,30 @@
+{
+  "name": "smart-mix",
+  "version": "1.0.0",
+  "description": "OOP mixin tool like no other",
+  "license": "MIT",
+  "private": true,
+  "author": {
+    "name": "Raul-Sebastian Mihăilă",
+    "email": "raul.mihaila@gmail.com"
+  },
+  "main": "./src/mixin.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raulsebastianmihaila/smart-mix"
+  },
+  "bugs": "https://github.com/raulsebastianmihaila/smart-mix/issues",
+  "keywords": [
+    "mixin",
+    "oop",
+    "javascript",
+    "mix"
+  ],
+  "scripts": {
+    "test": "jest",
+    "test-coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "jest": "^20.0.4"
+  }
+}
