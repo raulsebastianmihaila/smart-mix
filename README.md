@@ -307,7 +307,7 @@ const context = (() => {
 context.method(); // 'private message'
 ```
 - The `mix object` is returned by the `mixin provider function` and is the target of
-the optional `mix methods`. These `mix object` can stay private in the context in which the
+the optional `mix methods`. This `mix object` can stay private in the context in which the
 `mixin context` was created so that the `mixin context` can use private methods.
 ```js
 const context = (() => {
