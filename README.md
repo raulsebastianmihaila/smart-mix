@@ -2,11 +2,16 @@
 
 OOP composition-based mixin tool like no other.
 
-## Contents  
+## Contents
+  - [Installation](#installation)  
   - [Properties](#properties)
   - [Advantages over other mixin approaches](#advantages)
   - [Examples](#examples)  
   - [Concepts](#concepts)
+
+<a name="installation"></a>
+## Installation
+`npm i smart-mix`
 
 <a name="properties"></a>
 ## Properties
