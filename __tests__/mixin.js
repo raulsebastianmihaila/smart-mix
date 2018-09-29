@@ -1,3 +1,5 @@
+'use strict';
+
 const mixin = require('../src/mixin.js');
 
 describe('mixin', () => {
@@ -142,6 +144,28 @@ describe('mixin', () => {
     mix1.updateX();
     expect(mix1.getX()).toBe(1);
     expect(mix2.getX()).toBe(0);
+  });
+
+  test('each mixin instantiation produces new methods', () => {
+    expect.assertions(2);
+
+    const mixinFunc = mixin(() => {
+      return {
+        method() {}
+      };
+    });
+    const mix1 = mixinFunc({mixMethods: ['method']});
+    const mix2 = mixinFunc({mixMethods: ['method']});
+
+    expect(mix1.method === mix2.method).toBe(false);
+
+    const context1 = {};
+    const context2 = {};
+
+    mixinFunc({context: context1, contextMethods: ['method']});
+    mixinFunc({context: context2, contextMethods: ['method']});
+
+    expect(context1.method === context2.method).toBe(false);
   });
 
   test('each mix instantiation has separate arguments from the others', () => {
