@@ -1,6 +1,6 @@
 {
   "name": "smart-mix",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OOP mixin tool like no other",
   "license": "MIT",
   "private": true,
