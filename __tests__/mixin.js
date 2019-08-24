@@ -291,4 +291,132 @@ describe('mixin', () => {
 
     new Context();
   });
+
+  test('when attaching getContext the context must be an object', () => {
+    expect.assertions(1);
+
+    const mixinFunc = mixin(() => {});
+
+    mixinFunc.getContext = () => {};
+
+    expect(() => mixinFunc({meta: true}))
+      .toThrowError('The context must be an object when getContext is provided.');
+  });
+
+  test('when attaching getState the state must be an object', () => {
+    expect.assertions(1);
+
+    const mixinFunc = mixin(() => {});
+
+    mixinFunc.getState = () => {};
+
+    expect(() => mixinFunc({meta: true}))
+      .toThrowError('The state must be an object when getState is provided.');
+  });
+
+  test('getContext receives the context and the state', () => {
+    expect.assertions(2);
+
+    const context = {};
+    const state = {};
+    const mixinProvider = mixin(() => {});
+
+    mixinProvider.getContext = (context_, state_) => {
+      expect(context_).toBe(context);
+      expect(state_).toBe(state);
+
+      return {};
+    };
+
+    mixinProvider({meta: true, context, state});
+  });
+
+  test('getContext must return an object', () => {
+    expect.assertions(1);
+
+    const context = {};
+    const mixinProvider = mixin(() => {});
+
+    mixinProvider.getContext = () => {};
+
+    expect(() => mixinProvider({meta: true, context})).toThrowError();
+  });
+
+  test('getState receives the context and the state', () => {
+    expect.assertions(2);
+
+    const context = {};
+    const state = {};
+    const mixinProvider = mixin(() => {});
+
+    mixinProvider.getState = (context_, state_) => {
+      expect(context_).toBe(context);
+      expect(state_).toBe(state);
+
+      return {};
+    };
+
+    mixinProvider({meta: true, context, state});
+  });
+
+  test('getState must return an object', () => {
+    expect.assertions(1);
+
+    const state = {};
+    const mixinProvider = mixin(() => {});
+
+    mixinProvider.getState = () => {};
+
+    expect(() => mixinProvider({meta: true, state})).toThrowError();
+  });
+
+  test('result from getContext is installed on the context', () => {
+    expect.assertions(3);
+
+    const context = {};
+    const mixinProvider = mixin(() => {});
+    const extraContext = {
+      x: 1,
+
+      get y() { return 1; }
+    };
+
+    Object.defineProperty(extraContext, 'z', {enumerable: false, configurable: false});
+
+    mixinProvider.getContext = () => extraContext;
+
+    mixinProvider({meta: true, context});
+
+    expect(Object.getOwnPropertyDescriptor(context, 'x'))
+      .toEqual(Object.getOwnPropertyDescriptor(extraContext, 'x'));
+    expect(Object.getOwnPropertyDescriptor(context, 'y'))
+      .toEqual(Object.getOwnPropertyDescriptor(extraContext, 'y'));
+    expect(Object.getOwnPropertyDescriptor(context, 'z'))
+      .toEqual(Object.getOwnPropertyDescriptor(extraContext, 'z'));
+  });
+
+  test('result from getState is installed on the state', () => {
+    expect.assertions(3);
+
+    const state = {};
+    const mixinProvider = mixin(() => {});
+    const extraState = {
+      x: 1,
+
+      get y() { return 1; }
+    };
+
+    Object.defineProperty(extraState, 'z', {enumerable: false, configurable: false});
+
+    mixinProvider.getState = () => extraState;
+
+    mixinProvider({meta: true, state});
+
+    expect(Object.getOwnPropertyDescriptor(state, 'x'))
+      .toEqual(Object.getOwnPropertyDescriptor(extraState, 'x'));
+    expect(Object.getOwnPropertyDescriptor(state, 'y'))
+      .toEqual(Object.getOwnPropertyDescriptor(extraState, 'y'));
+    expect(Object.getOwnPropertyDescriptor(state, 'z'))
+      .toEqual(Object.getOwnPropertyDescriptor(extraState, 'z'));;
+  });
 });

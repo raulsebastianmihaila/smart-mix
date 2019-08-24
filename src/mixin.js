@@ -12,14 +12,43 @@
   // a new mix object is created and returned.
   // the optional mixMethods option is an array of keys used to get the mixin methods from
   // the mixin methods container object and set them on the mix object.
+  // the meta option can be used to tell the mixin mechanism to lookup the getContext and
+  // getState static methods on the mixin provider function and use any of the
+  // ones it finds to populate the context and state objects that were passed with properties.
+  // the results from getContext are defined into the context object. the results from
+  // getState are defined into the state object. these functions are called with the context
+  // and state objects and they can return an object that provides property descriptors
+  // which are used to define properties on the target object.
   const mixin = (mixinFunc) => {
     if (!isFunc(mixinFunc)) {
       throw new Error('The mixin callback must be a function.');
     }
 
-    return ({context, state, contextMethods, mixMethods}) => {
+    const mixinProvider = ({context, state, contextMethods, mixMethods, meta}) => {
       const mixinMethods = mixinFunc(context, state);
       const mix = {};
+
+      if (meta) {
+        if (mixinProvider.getContext) {
+          if (!isObj(context)) {
+            throw new Error('The context must be an object when getContext is provided.');
+          }
+
+          Object.defineProperties(
+            context,
+            Object.getOwnPropertyDescriptors(mixinProvider.getContext(context, state)));
+        }
+
+        if (mixinProvider.getState) {
+          if (!isObj(state)) {
+            throw new Error('The state must be an object when getState is provided.');
+          }
+
+          Object.defineProperties(
+            state,
+            Object.getOwnPropertyDescriptors(mixinProvider.getState(context, state)));
+        }
+      }
 
       if (contextMethods) {
         if (!isObj(context)) {
@@ -35,6 +64,8 @@
 
       return mix;
     };
+
+    return mixinProvider;
   };
 
   const setMethods = (methods, target, mixinMethods) => {

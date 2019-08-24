@@ -17,6 +17,7 @@ OOP composition-based mixin tool like no other.
 ## Properties
 - mixes in public methods
 - mixes in private methods
+- allows mixing in data and accessor properties
 - allows sharing private state and public state
 - each instance of the mixin has its own state
 - avoids keys collisions
@@ -336,4 +337,52 @@ const context = (() => {
 })();
 
 context.existingMethod(); // 'private message'
+```
+- Optionally, using the `meta` option the resulted mixin provider function can have static methods
+attached that allows us mixin in data and accessor properties. We can use a `getContext` static
+method that provides properties for the mixin context object. Also, a `getState` static method
+that provides properties for the mixin state object. These two functions receive the mixin context
+and state objects and return an object whose properties will be installed on the mixin context
+object or mixin state object by applying the same property descriptors of the returned
+object. This way we can install accessor properties on the mixin context and state objects.
+```js
+const context = (() => {
+  const context = {
+    x: 1
+  };
+  const privateState = {
+    y: 2
+  };
+
+  const mixinProviderFunction = mixin((context, privateState) => {
+    return {
+      getResult() {
+        return context.sum;
+      }
+    };
+  })
+
+  mixinProviderFunction.getContext = (context, privateState) => ({
+    z: 3,
+
+    get sum() {
+      return context.x + context.z + privateState.y + privateState.u;
+    }
+  });
+
+  mixinProviderFunction.getState = () => ({
+    u: 4
+  });
+
+  const mix = mixinProviderFunction({
+    meta: true,
+    context,
+    state: privateState,
+    contextMethods: ['getResult']
+  });
+
+  return context;
+})();
+
+console.log(context.getResult()); // 10
 ```
