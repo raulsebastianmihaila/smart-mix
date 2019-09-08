@@ -339,7 +339,7 @@ const context = (() => {
 context.existingMethod(); // 'private message'
 ```
 - Optionally, using the `meta` option the resulted mixin provider function can have static methods
-attached that allows us mixin in data and accessor properties. We can use a `getContext` static
+attached that allows us mix in data and accessor properties. We can use a `getContext` static
 method that provides properties for the mixin context object. Also, a `getState` static method
 that provides properties for the mixin state object. These two functions receive the mixin context
 and state objects and return an object whose properties will be installed on the mixin context
