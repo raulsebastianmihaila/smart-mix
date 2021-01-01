@@ -1,6 +1,4 @@
-'use strict';
-
-const mixin = require('../src/mixin.js');
+import mixin from '../src/mixin.js';
 
 describe('mixin', () => {
   test('the mixin callback must be a function', () => {
