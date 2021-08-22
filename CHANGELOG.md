@@ -1,3 +1,9 @@
+<a name="2.0.1"></a>
+# [2.0.1](https://github.com/raulsebastianmihaila/smart-mix/compare/v2.0.0...v2.0.1) (2021-08-22)
+
+### Updates
+- Updated jest dev dependency.
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/raulsebastianmihaila/smart-mix/compare/v1.1.0...v2.0.0) (2021-01-01)
 
