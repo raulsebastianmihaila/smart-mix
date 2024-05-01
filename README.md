@@ -31,16 +31,16 @@ OOP composition-based mixin tool like no other.
 ## Advantages over other mixin approaches
 
 The common ways mixins have been implemented so far were:
-    - naive approach - Object.assign, Reactjs mixins, Typescript mixins
-    - based on prototypal inheritance
-    - [functional mixins](https://medium.com/javascript-scene/functional-mixins-composing-software-ffb66d5e731c)
+- naive approach - Object.assign, Reactjs mixins, Typescript mixins
+- based on prototypal inheritance
+- [functional mixins](https://medium.com/javascript-scene/functional-mixins-composing-software-ffb66d5e731c)
 
 The main downsides of these approaches are:
-    - Not being able to easily tell what your class/object can do by simply looking at its definition context (and having to jump to different files)
-    - Not being able to easily tell where your class'/object's capabilities come from by simply looking at its definition context
-    - Avoiding property collisions by making the last mixin object always win (which is not the best solution)
-    - The gorilla-banana problem. You automatically get all the methods in the mixin objects even though you might not need all of them. This is a violation of the least knowledge principle.
-    - The inability of sharing private state between the mixin context and the mixin functions.
+- Not being able to easily tell what your class/object can do by simply looking at its definition context (and having to jump to different files)
+- Not being able to easily tell where your class'/object's capabilities come from by simply looking at its definition context
+- Avoiding property collisions by making the last mixin object always win (which is not the best solution)
+- The gorilla-banana problem. You automatically get all the methods in the mixin objects even though you might not need all of them. This is a violation of the least knowledge principle.
+- The inability of sharing private state between the mixin context and the mixin functions.
 
 The first 4 issues are solved in a composition based mixin mechanism by explicitly picking every mixin function.
 
