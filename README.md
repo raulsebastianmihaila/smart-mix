@@ -3,11 +3,11 @@
 OOP composition-based mixin tool like no other.
 
 ## Contents
-    - [Installation](#installation)  
-    - [Properties](#properties)
-    - [Advantages over other mixin approaches](#advantages)
-    - [Examples](#examples)  
-    - [Concepts](#concepts)
+- [Installation](#installation)
+- [Properties](#properties)
+- [Advantages over other mixin approaches](#advantages)
+- [Examples](#examples)
+- [Concepts](#concepts)
 
 <a name="installation"></a>
 ## Installation
