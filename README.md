@@ -3,11 +3,11 @@
 OOP composition-based mixin tool like no other.
 
 ## Contents
-  - [Installation](#installation)  
-  - [Properties](#properties)
-  - [Advantages over other mixin approaches](#advantages)
-  - [Examples](#examples)  
-  - [Concepts](#concepts)
+    - [Installation](#installation)  
+    - [Properties](#properties)
+    - [Advantages over other mixin approaches](#advantages)
+    - [Examples](#examples)  
+    - [Concepts](#concepts)
 
 <a name="installation"></a>
 ## Installation
@@ -16,7 +16,7 @@ OOP composition-based mixin tool like no other.
 <a name="properties"></a>
 ## Properties
 - mixes in public methods
-- mixes in private methods
+- mixes in private/shared methods
 - allows mixing in data and accessor properties
 - allows sharing private state and public state
 - each instance of the mixin has its own state
@@ -31,16 +31,16 @@ OOP composition-based mixin tool like no other.
 ## Advantages over other mixin approaches
 
 The common ways mixins have been implemented so far were:
-  - naive approach - Object.assign, Reactjs mixins, Typescript mixins
-  - based on prototypal inheritance
-  - [functional mixins](https://medium.com/javascript-scene/functional-mixins-composing-software-ffb66d5e731c)
+    - naive approach - Object.assign, Reactjs mixins, Typescript mixins
+    - based on prototypal inheritance
+    - [functional mixins](https://medium.com/javascript-scene/functional-mixins-composing-software-ffb66d5e731c)
 
 The main downsides of these approaches are:
-  - Not being able to easily tell what your class/object can do by simply looking at its definition context (and having to jump to different files)
-  - Not being able to easily tell where your class'/object's capabilities come from by simply looking at its definition context
-  - Avoiding property collisions by making the last mixin object always win (which is not the best solution)
-  - The gorilla-banana problem. You automatically get all the methods in the mixin objects even though you might not need all of them. This is a violation of the least knowledge principle.
-  - The inability of sharing private state between the mixin context and the mixin functions.
+    - Not being able to easily tell what your class/object can do by simply looking at its definition context (and having to jump to different files)
+    - Not being able to easily tell where your class'/object's capabilities come from by simply looking at its definition context
+    - Avoiding property collisions by making the last mixin object always win (which is not the best solution)
+    - The gorilla-banana problem. You automatically get all the methods in the mixin objects even though you might not need all of them. This is a violation of the least knowledge principle.
+    - The inability of sharing private state between the mixin context and the mixin functions.
 
 The first 4 issues are solved in a composition based mixin mechanism by explicitly picking every mixin function.
 
@@ -54,13 +54,13 @@ The first 4 issues are solved in a composition based mixin mechanism by explicit
 import mixin from 'smart-mix';
 
 export default mixin(() => ({
-  eatChocolate() {
-    console.log('eating chocolate');
-  },
+    eatChocolate() {
+        console.log('eating chocolate');
+    },
 
-  initiateTummyPain() {
-    throw new Error('My tummy hurts!');
-  }
+    initiateTummyPain() {
+        throw new Error('My tummy hurts!');
+    }
 }));
 ```
 
@@ -70,9 +70,9 @@ export default mixin(() => ({
 import mixin from 'smart-mix';
 
 export default mixin(() => ({
-  dance() {
-    console.log('dancing');
-  }
+    dance() {
+        console.log('dancing');
+    }
 }));
 ```
 
@@ -81,29 +81,29 @@ import chocolateEater from './chocolate-eater-mixin';
 import dancer from './dancer-mixin';
 
 class Bob {
-  constructor() {
-    chocolateEater({
-      context: this,
-      contextMethods: ['eatChocolate', 'initiateTummyPain']
-    });
-    dancer({
-      context: this,
-      contextMethods: ['dance']
-    });
-  }
+    constructor() {
+        chocolateEater({
+            publicContext: this,
+            publicMethods: ['eatChocolate', 'initiateTummyPain']
+        });
+        dancer({
+            publicContext: this,
+            publicMethods: ['dance']
+        });
+    }
 }
 
 class Alice {
-  constructor() {
-    chocolateEater({
-      context: this,
-      contextMethods: ['eatChocolate']
-    });
-    dancer({
-      context: this,
-      contextMethods: ['dance']
-    });
-  }
+    constructor() {
+        chocolateEater({
+            publicContext: this,
+            publicMethods: ['eatChocolate']
+        });
+        dancer({
+            publicContext: this,
+            publicMethods: ['dance']
+        });
+    }
 }
 
 const bob = new Bob();
@@ -123,12 +123,12 @@ bob.initiateTummyPain(); // throws My tummy hurts!
 
 import mixin from 'smart-mix';
 
-export default mixin((context, shared) => {
-  return {
-    womanUpdateSecret() {
-      shared.secret = 'woman secret';
-    }
-  };
+export default mixin((publicContext, sharedContext) => {
+    return {
+        womanUpdateSecret() {
+            sharedContext.secret = 'woman secret';
+        }
+    };
 });
 ```
 
@@ -137,12 +137,12 @@ export default mixin((context, shared) => {
 
 import mixin from 'smart-mix';
 
-export default mixin((context, shared) => {
-  return {
-    manUpdateSecret() {
-      shared.secret = 'man secret';
-    }
-  };
+export default mixin((publicContext, sharedContext) => {
+    return {
+        manUpdateSecret() {
+            sharedContext.secret = 'man secret';
+        }
+    };
 });
 ```
 
@@ -151,27 +151,27 @@ import womanSecretKeeper from './woman-secret-keeper-mixin';
 import manSecretKeeper from './man-secret-keeper-mixin';
 
 const hybrid = (() => {
-  const hybrid = {
-    getSecret() {
-      console.log(secretBox.secret);
-    }
-  };
+    const hybrid = {
+        getSecret() {
+            console.log(secretBox.secret);
+        }
+    };
 
-  const secretBox = {};
-  const womanMix = womanSecretKeeper({
-    state: secretBox,
-    mixMethods: ['womanUpdateSecret']
-  });
-  const manMix = manSecretKeeper({
-    state: secretBox,
-    mixMethods: ['manUpdateSecret']
-  });
+    const secretBox = {};
+    const womanMix = womanSecretKeeper({
+        sharedContext: secretBox,
+        mixMethods: ['womanUpdateSecret']
+    });
+    const manMix = manSecretKeeper({
+        sharedContext: secretBox,
+        mixMethods: ['manUpdateSecret']
+    });
 
-  womanMix.womanUpdateSecret();
-  hybrid.getSecret(); // woman secret
-  manMix.manUpdateSecret();
+    womanMix.womanUpdateSecret();
+    hybrid.getSecret(); // woman secret
+    manMix.manUpdateSecret();
 
-  return hybrid;
+    return hybrid;
 })();
 
 hybrid.getSecret(); // man secret
@@ -183,60 +183,60 @@ hybrid.getSecret(); // man secret
 
 import mixin from 'smart-mix';
 
-export default mixin((context, shared) => {
-  let privateMixinProviderNumber;
+export default mixin((publicContext, sharedContext) => {
+    let privateMixinProviderNumber;
 
-  return {
-    setPrivateMixinProviderNumber(number) {
-      privateMixinProviderNumber = number;
-    },
+    return {
+        setPrivateMixinProviderNumber(number) {
+            privateMixinProviderNumber = number;
+        },
 
-    updateSharedNumber(number) {
-      shared.number = number;
-    },
+        updateSharedNumber(number) {
+            sharedContext.number = number;
+        },
 
-    getSumResult() {
-      return privateMixinProviderNumber + shared.number;
-    }
-  };
+        getSumResult() {
+            return privateMixinProviderNumber + sharedContext.number;
+        }
+    };
 });
 ```
 
 ```js
 import numberMixin from './number-mixin';
 
-const context1 = {};
-const sharedState1 = {};
+const publicContext1 = {};
+const sharedContext1 = {};
 
-const context2 = {};
-const sharedState2 = {};
+const publicContext2 = {};
+const sharedContext2 = {};
 
 numberMixin({
-  context: context1,
-  state: sharedState1,
-  contextMethods: [
-    'setPrivateMixinProviderNumber', 
-    'updateSharedNumber', 
-    'getSumResult'
-  ]
+    publicContext: publicContext1,
+    sharedContext: sharedContext1,
+    publicMethods: [
+        'setPrivateMixinProviderNumber', 
+        'updateSharedNumber', 
+        'getSumResult'
+    ]
 });
 
 numberMixin({
-  context: context2,
-  state: sharedState2,
-  contextMethods: [
-    'setPrivateMixinProviderNumber', 
-    'updateSharedNumber', 
-    'getSumResult'
-  ]
+    publicContext: publicContext2,
+    sharedContext: sharedContext2,
+    publicMethods: [
+        'setPrivateMixinProviderNumber', 
+        'updateSharedNumber', 
+        'getSumResult'
+    ]
 });
 
-context1.setPrivateMixinProviderNumber(100);
-context1.updateSharedNumber(1000);
-context2.setPrivateMixinProviderNumber(200);
-context2.updateSharedNumber(2000);
-console.log(context1.getSumResult()); // 1100
-console.log(context2.getSumResult()); // 2200
+publicContext1.setPrivateMixinProviderNumber(100);
+publicContext1.updateSharedNumber(1000);
+publicContext2.setPrivateMixinProviderNumber(200);
+publicContext2.updateSharedNumber(2000);
+console.log(publicContext1.getSumResult()); // 1100
+console.log(publicContext2.getSumResult()); // 2200
 ```
 
 <a name="concepts"></a>
@@ -256,133 +256,122 @@ const mixinProviderFunction = mixin();
 function` and it must return the `mixin methods container object`.
 ```js
 mixin(() => {
-  return {
-    method() {}
-  }
+    return {
+        method() {}
+    }
 });
 ```
-- The optional `mixin context` is passed to the `mixin callback` and it becomes the target of the
-optional `context methods`.
+- The optional `mixin public context` is passed to the `mixin callback` and it becomes the target of the optional `public methods`.
 ```js
-const context = {
-  existingMethod() { return 2; }
+const publicContext = {
+    existingMethod() { return 2; }
 };
 
-const mixinProviderFunction = mixin((context) => {
-  return {
-    method() {
-      return context.existingMethod() + 1;
-    }
-  };
-})
-
-mixinProviderFunction({
-  context,
-  contextMethods: ['method']
+const mixinProviderFunction = mixin((publicContext) => {
+    return {
+        method() {
+            return publicContext.existingMethod() + 1;
+        }
+    };
 });
 
-context.method(); // 3
+mixinProviderFunction({
+    publicContext,
+    publicMethods: ['method']
+});
+
+publicContext.method(); // 3
 ```
-- The optional `mixin state` is the second argument passed to the `mixin callback` and it can
-contain any other state, including state that is private in the context in which the `mixin context`
-is created.
+- The optional `mixin shared context` is the second argument passed to the `mixin callback` and it can contain any other state, including state that is private in the context in which the `mixin public context` is created.
 ```js
-const context = (() => {
-  const context = {};
-  const privateState = {
-    property: 'private message'
-  };
-
-  const mixinProviderFunction = mixin((context, privateState) => {
-    return {
-      method() {
-        return privateState.property;
-      }
+const publicContext = (() => {
+    const publicContext = {};
+    const sharedContext = {
+        property: 'private message'
     };
-  })
 
-  mixinProviderFunction({
-    context, 
-    state: privateState,
-    contextMethods: ['method']
-  });
+    const mixinProviderFunction = mixin((publicContext, sharedContext) => {
+        return {
+            method() {
+                return sharedContext.property;
+            }
+        };
+    })
 
-  return context;
+    mixinProviderFunction({
+        publicContext, 
+        sharedContext,
+        publicMethods: ['method']
+    });
+
+    return publicContext;
 })();
 
-context.method(); // 'private message'
+publicContext.method(); // 'private message'
 ```
-- The `mix object` is returned by the `mixin provider function` and is the target of
-the optional `mix methods`. This `mix object` can stay private in the context in which the
-`mixin context` was created so that the `mixin context` can use private methods.
+- The `mix object` is returned by the `mixin provider function` and is the target of the optional `mix methods`. This `mix object` can stay private in the context in which the `mixin public context` was created so that the `mixin public context` can use private methods.
 ```js
-const context = (() => {
-  const context = {
-    existingMethod() { return mix.privateMethod(); }
-  };
-
-  const mixinProviderFunction = mixin(() => {
-    return {
-      privateMethod() {
-        return 'private message';
-      }
+const publicContext = (() => {
+    const publicContext = {
+        existingMethod() { return mix.privateMethod(); }
     };
-  })
 
-  const mix = mixinProviderFunction({
-    mixMethods: ['privateMethod']
-  });
+    const mixinProviderFunction = mixin(() => {
+        return {
+            privateMethod() {
+                return 'private message';
+            }
+        };
+    })
 
-  return context;
+    const mix = mixinProviderFunction({
+        mixMethods: ['privateMethod']
+    });
+
+    return publicContext;
 })();
 
-context.existingMethod(); // 'private message'
+publicContext.existingMethod(); // 'private message'
 ```
-- Optionally, using the `meta` option the resulted mixin provider function can have static methods
-attached that allows us mix in data and accessor properties. We can use a `getContext` static
-method that provides properties for the mixin context object. Also, a `getState` static method
-that provides properties for the mixin state object. These two functions receive the mixin context
-and state objects and return an object whose properties will be installed on the mixin context
-object or mixin state object by applying the same property descriptors of the returned
-object. This way we can install accessor properties on the mixin context and state objects.
+- Optionally, using the `define` option the resulted mixin provider function can have static methods attached that allows us mix in data and accessor properties. We can use a `getPublicContext` static method that provides properties for the mixin public context object. Also, a `getSharedContext` static method that provides properties for the mixin shared context object. These two functions receive the mixin public context and shared context objects and return an object whose properties will be installed on the mixin public context object or mixin shared context object by applying the same property descriptors of the returned object. This way we can install accessor properties on the mixin public context and shared context objects.
 ```js
-const context = (() => {
-  const context = {
-    x: 1
-  };
-  const privateState = {
-    y: 2
-  };
-
-  const mixinProviderFunction = mixin((context, privateState) => {
-    return {
-      getResult() {
-        return context.sum;
-      }
+const publicContext = (() => {
+    const publicContext = {
+        x: 1
     };
-  })
+    const sharedContext = {
+        y: 2
+    };
 
-  mixinProviderFunction.getContext = (context, privateState) => ({
-    z: 3,
+    const mixinProviderFunction = mixin((publicContext, sharedContext) => {
+        return {
+            getResult() {
+                return publicContext.sum;
+            }
+        };
+    })
 
-    get sum() {
-      return context.x + context.z + privateState.y + privateState.u;
-    }
-  });
+    mixinProviderFunction.getPublicContext = (publicContext, sharedContext) => ({
+        z: 3,
 
-  mixinProviderFunction.getState = () => ({
-    u: 4
-  });
+        get sum() {
+            return publicContext.x + publicContext.z + sharedContext.y + sharedContext.u;
+        }
+    });
 
-  const mix = mixinProviderFunction({
-    meta: true,
-    context,
-    state: privateState,
-    contextMethods: ['getResult']
-  });
+    mixinProviderFunction.getSharedContext = () => ({
+        u: 4
+    });
 
-  return context;
+    const mix = mixinProviderFunction({
+        define: true,
+        publicContext,
+        sharedContext,
+        publicMethods: ['getResult']
+    });
+
+    return publicContext;
 })();
 
-console.log(context.getResult()); // 10
+console.log(publicContext.getResult()); // 10
 ```

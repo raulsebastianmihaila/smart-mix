@@ -1,3 +1,13 @@
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/raulsebastianmihaila/smart-mix/compare/v2.0.1...v3.0.0) (2024-05-01)
+
+### Breaking changes
+- Renamed options: context to publicContext, state to sharedContext, contextMethods to publicMethods, meta to define, getContext to getPublicContext and getState to getSharedContext.
+
+### Updates
+- Added a test to allow inherited non-writable properties on publicContext.
+- Updated jest dev dependency.
+
 <a name="2.0.1"></a>
 # [2.0.1](https://github.com/raulsebastianmihaila/smart-mix/compare/v2.0.0...v2.0.1) (2021-08-22)
 

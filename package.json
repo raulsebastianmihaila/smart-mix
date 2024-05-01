@@ -26,6 +26,6 @@
     "test-coverage": "NODE_OPTIONS=--experimental-vm-modules npx jest --coverage"
   },
   "devDependencies": {
-    "jest": "^27.0.6"
+    "jest": "^29.7.0"
   }
 }
